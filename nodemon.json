@@ -1,0 +1,8 @@
+{
+  "watch": ["src", "public", "views", "data"],
+  "ext": "ts,js,ejs,json,css",
+  "ignore": ["node_modules"],
+  "exec": "tsx",
+  "args": "src/server.ts",
+  "delay": 500
+}

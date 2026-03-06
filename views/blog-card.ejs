@@ -1,0 +1,18 @@
+<div class="card">
+  <h2><%= title %></h2>
+
+  <div class="meta">
+    <span>✍ Author: <%= author %></span>
+    <span>👁 <%= views %> views</span>
+    <span>📅 <%= createdAt %></span>
+  </div>
+
+  <p><%= content %></p>
+
+  <div class="card-actions">
+    <a href="/post/<%= id %>" class="btn-sm">View</a>
+    <a href="/edit/<%= id %>" class="btn-sm warning">Edit</a>
+
+    <button class="btn-sm danger" onclick="return confirmDelete('<%= id %>');">Delete</button>
+  </div>
+</div>

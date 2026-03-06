@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevBlog</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="toast-success" class="toast-success">Action completed successfully🥳</div>
+      <div id="toast-failure" class="toast-failure">Something went wrong. Please try again☹️</div>
+
+      <div class="page-header">
+        <h1>📘 DevBlog</h1>
+        <div>
+          <a href="/create" class="btn">+ Create Post</a>
+          <form action="/api/posts/reload" method="GET">
+            <button class="btn">🔄 Reload Posts</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="post-grid">
+        <% posts.forEach(post => { %>
+          <%- include('blog-card', { 
+            id: post.id, 
+            title: post.title, 
+            author: post.author, 
+            content: post.content, 
+            createdAt: post.createdAt, 
+            views: post.views 
+          }) %>
+        <% }); %>
+      </div>
+    </div>
+
+    <script src="/js/script.js"></script>
+  </body>
+</html>
