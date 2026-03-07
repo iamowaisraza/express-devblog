@@ -20,7 +20,7 @@ mysql -u root -p < database/schema.sql
 
 npm run dev
 
-Tech Stack:
+## Tech Stack:
 - Node.js
 - Express.js
 - TypeScript
