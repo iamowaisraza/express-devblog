@@ -1,53 +1,52 @@
 import { Request, Response } from "express";
-import iPost from "../types/iPosts";
+import { ERROR_MESSAGES } from "../config/validation";
+import { getPostByID, getPosts } from "../models/post.model";
+import type { ValidatedParams, iPost } from "../types/iPosts";
+import { AppError } from "../utils/appError";
 import captureAsyncError from "../utils/captureAsyncError";
-import { posts } from "../utils/filesReader";
+import { formatDate, truncateContent } from "../utils/helper";
 
-// Helper function to truncate content
-const truncateContent = (content: string, limit: number = 110): string => {
-  return content.length > limit ? content.slice(0, limit) + "..." : content;
-};
+export const home = captureAsyncError(async (_req: Request, res: Response) => {
+  const posts = await getPosts();
 
-// Helper function to format date
-const formatDate = (date: string | Date): string => {
-  return new Date(date).toDateString();
-};
-
-export const home = captureAsyncError(async (req: Request, res: Response) => {
   const formattedPosts = posts.map((post: iPost) => ({
     ...post,
     content: truncateContent(post.content),
-    createdAt: formatDate(post.createdAt),
+    createdAt: formatDate(post.created_at),
   }));
 
   res.render("home", { posts: formattedPosts });
 });
 
 export const detail = captureAsyncError(async (req: Request, res: Response) => {
-  const postID = Number(req.params.id);
-  const post = posts.find((p: iPost) => p.id === postID);
+  const { id } = (req.validated as ValidatedParams).params;
+  const post = await getPostByID(id);
 
-  if (!post) return notFound(req, res);
+  if (!post) {
+    throw new AppError(ERROR_MESSAGES.POST_NOT_FOUND, 404);
+  }
 
-  res.render("detail", {
+  return res.render("detail", {
     id: post.id,
     title: post.title,
     author: post.author,
     content: post.content,
-    createdAt: formatDate(post.createdAt),
+    createdAt: formatDate(post.created_at),
     views: post.views,
   });
 });
 
-export const create = captureAsyncError(async (req: Request, res: Response) => {
+export const create = captureAsyncError(async (_req: Request, res: Response) => {
   res.render("create-blog-page");
 });
 
 export const edit = captureAsyncError(async (req: Request, res: Response) => {
-  const postID = Number(req.params.id);
-  const post = posts.find((p: iPost) => p.id === Number(postID));
+  const { id } = (req.validated as ValidatedParams).params;
+  const post = await getPostByID(id);
 
-  if (!post) return notFound(req, res);
+  if (!post) {
+    throw new AppError(ERROR_MESSAGES.POST_NOT_FOUND, 404);
+  }
 
   res.render("edit-blog-page", {
     id: post.id,
@@ -57,6 +56,6 @@ export const edit = captureAsyncError(async (req: Request, res: Response) => {
   });
 });
 
-export const notFound = (req: Request, res: Response) => {
+export const notFound = (_req: Request, res: Response) => {
   res.status(404).render("not-found");
 };

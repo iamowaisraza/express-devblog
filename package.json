@@ -1,7 +1,7 @@
 {
-  "name": "express-devblog",
-  "version": "2.0.0",
-  "description": "A modern server-side rendered blog application built with Express.js and EJS templating engine. Features full CRUD operations, TypeScript support, RESTful API design, and professional Node.js development practices.",
+  "name": "devblog",
+  "version": "3.0.0",
+  "description": "SSR blog built with Express.js, EJS, and TypeScript, featuring CRUD operations with MySQL, request validation using Zod, and RESTful backend architecture.",
   "main": "server.ts",
   "type": "module",
   "scripts": {
@@ -20,6 +20,8 @@
   "dependencies": {
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mysql2": "^3.19.0",
+    "zod": "^4.3.6"
   }
 }

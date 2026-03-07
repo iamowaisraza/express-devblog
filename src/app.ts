@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import { join } from "path";
+import { ERROR_MESSAGES } from "./config/validation";
 import { globalErrorHandler } from "./middlewares/error.middleware";
 import pageRouter from "./routes/page.route";
 import postRouter from "./routes/post.route";
@@ -22,8 +23,8 @@ app.use("/", pageRouter);
 app.use("/api/posts", postRouter);
 
 // 404 handler
-app.use((req: Request, res: Response, next: NextFunction) => {
-  return next(new AppError("Route not found!", 404));
+app.use((_req: Request, _res: Response, next: NextFunction) => {
+  return next(new AppError(ERROR_MESSAGES.ROUTE_NOT_FOUND, 404));
 });
 
 // Global error handler

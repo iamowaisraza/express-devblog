@@ -15,24 +15,26 @@
         <h1>📘 DevBlog</h1>
         <div>
           <a href="/create" class="btn">+ Create Post</a>
-          <form action="/api/posts/reload" method="GET">
-            <button class="btn">🔄 Reload Posts</button>
-          </form>
+          <a href="/" class="btn">🔄 Reload Posts</a>
         </div>
       </div>
 
-      <div class="post-grid">
-        <% posts.forEach(post => { %>
-          <%- include('blog-card', { 
-            id: post.id, 
-            title: post.title, 
-            author: post.author, 
-            content: post.content, 
-            createdAt: post.createdAt, 
-            views: post.views 
-          }) %>
-        <% }); %>
-      </div>
+      <% if (posts.length === 0) { %>
+        <%- include('no-posts') %>
+      <% } else { %>
+        <div class="post-grid">
+          <% posts.forEach(post => { %>
+            <%- include('blog-card', { 
+              id: post.id, 
+              title: post.title, 
+              author: post.author, 
+              content: post.content, 
+              createdAt: post.createdAt, 
+              views: post.views 
+            }) %>
+          <% }); %>
+        </div>
+      <% } %>
     </div>
 
     <script src="/js/script.js"></script>

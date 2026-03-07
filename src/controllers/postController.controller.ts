@@ -1,58 +1,64 @@
-import type { NextFunction, Request, Response } from "express";
-import * as postService from "../services/postService.service";
-import iPost from "../types/iPosts";
+import type { Request, Response } from "express";
+import { ERROR_MESSAGES } from "../config/validation";
+import { createPost, deletePost, getPostByID, getPosts, updatePost } from "../models/post.model";
 import { AppError } from "../utils/appError";
 import captureAsyncError from "../utils/captureAsyncError";
+import { getValidatedData } from "../utils/helper";
+import { successResponse } from "../utils/response";
 
-export const getAllPost = captureAsyncError(async (req: Request, res: Response) => {
-  const posts = postService.getAllPosts();
+export const getPost = captureAsyncError(async (req: Request, res: Response) => {
+  const { params } = getValidatedData(req);
+  const { id } = params;
+  const post = await getPostByID(id);
 
-  res.status(200).json({
-    status: "success",
-    results: posts.length,
-    data: { posts },
-  });
+  if (!post) {
+    throw new AppError(ERROR_MESSAGES.POST_NOT_FOUND, 404);
+  }
+
+  successResponse(res, 200, "Post retrieved successfully", post);
+});
+
+export const getAllPosts = captureAsyncError(async (_req: Request, res: Response) => {
+  const posts = await getPosts();
+
+  successResponse(res, 200, "Posts retrieved successfully", posts);
 });
 
 export const addPost = captureAsyncError(async (req: Request, res: Response) => {
-  const body = req.body;
-  await postService.createPost(body);
+  const { body } = getValidatedData(req);
+  const { title, content, author } = body;
 
-  res.redirect("/?success=1");
+  const postId = await createPost({ title, content, author });
+  const post = await getPostByID(postId);
+
+  successResponse(res, 201, "Post added successfully", post);
 });
 
-export const updatePost = captureAsyncError(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const body = req.body;
-  const updated = await postService.updatePost(Number(id), body as iPost);
+export const editPost = captureAsyncError(async (req: Request, res: Response) => {
+  const validated = getValidatedData(req);
+  const { title, content, author } = validated.body;
+  const { id } = validated.params;
+
+  const updated = await updatePost(id, { title, author, content });
 
   if (!updated) {
-    throw new AppError("Update failed!", 500);
+    throw new AppError(ERROR_MESSAGES.POST_NOT_FOUND, 404);
   }
 
-  res.status(200).json({
-    status: "success",
-    message: "post has been updated successfully!",
-  });
+  const updatedPost = await getPostByID(id);
+
+  successResponse(res, 200, "Post updated successfully", updatedPost);
 });
 
-export const deletePost = captureAsyncError(async (req: Request, res: Response) => {
-  const id = req.params.id;
+export const removePost = captureAsyncError(async (req: Request, res: Response) => {
+  const { params } = getValidatedData(req);
+  const { id } = params;
 
-  const deleted = await postService.deletePost(Number(id));
+  const deleted = await deletePost(id);
 
   if (!deleted) {
-    throw new AppError("Delete failed!", 500);
+    throw new AppError(ERROR_MESSAGES.POST_NOT_FOUND, 404);
   }
 
-  res.status(200).json({
-    status: "success",
-    message: "post has been deleted successfully!",
-  });
-});
-
-export const reload = captureAsyncError(async (req: Request, res: Response) => {
-  await postService.reloadPosts();
-
-  res.redirect("/?success=1");
+  successResponse(res, 204, "Post removed successfully");
 });

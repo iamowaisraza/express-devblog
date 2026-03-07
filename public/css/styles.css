@@ -115,3 +115,39 @@ textarea {
   color: #c62828;
   background-color: #ffebee;
 }
+
+.no-posts-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  margin-top: 40px;
+}
+
+.no-posts-content {
+  background: white;
+  padding: 60px 40px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  max-width: 400px;
+}
+
+.no-posts-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.no-posts-content h2 {
+  margin: 0 0 15px 0;
+  color: #2d3436;
+  font-size: 24px;
+}
+
+.no-posts-content p {
+  margin: 0 0 30px 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}

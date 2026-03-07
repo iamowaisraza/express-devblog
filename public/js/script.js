@@ -31,12 +31,7 @@ async function confirmDelete(id) {
       method: "DELETE",
     });
 
-    if (response.ok) {
-      alert("Post Deleted Successfully🥳");
-      window.location.href = "/";
-    } else {
-      alert("Failed to delete post☹️");
-    }
+    window.location.href = response.ok ? "/?success=1" : "/?failure=1";
   } catch (error) {
     console.error("Delete error:", error);
     alert("Failed to delete post☹️");
@@ -60,15 +55,34 @@ async function updatePost(id) {
       }),
     });
 
-    if (response.ok) {
-      alert("Post Updated Successfully🥳");
-      window.location.href = "/";
-    } else {
-      alert("Failed to update post☹️");
-    }
+    window.location.href = response.ok ? "/?success=1" : "/?failure=1";
   } catch (error) {
     console.error("Update error:", error);
     alert("Failed to update post☹️");
+  }
+}
+
+async function createPost() {
+  const title = document.getElementById("title").value;
+  const author = document.getElementById("author").value;
+  const content = document.getElementById("content").value;
+  try {
+    const response = await fetch(`/api/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({
+        title,
+        author,
+        content,
+      }),
+    });
+
+    window.location.href = response.ok ? "/?success=1" : "/?failure=1";
+  } catch (error) {
+    console.error("Create error:", error);
+    alert("Failed to create post☹️");
   }
 }
 
